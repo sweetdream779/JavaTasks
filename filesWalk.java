@@ -22,9 +22,14 @@ public class filesWalk {
 					vol = true;
 				if (line.toLowerCase().contains(word2.toLowerCase()))
 					trans = true;
-				if (vol && trans)
+				if (vol && trans) {
+					is.close();
+					br.close();
 					return true;
+				}
 			}
+			is.close();
+			br.close();
 
 		} catch (IOException e) {
 			System.out.println("Error of path " + e);
