@@ -17,6 +17,23 @@ public class Euclid {
 		return method2(b, Math.floorMod(a, b));
 	}
 
+	static int rem(int a, int b) {
+		int remainder = 0;
+		if (b == 0)
+			return a < 0 ? -a : a;
+		if (a == 0)
+			return rem(b, a);
+		if ((a > 0 && b > 0) || (a < 0 && b > 0)) {
+			remainder = a - ((int) Math.floor(a / b)) * b;
+		}
+		if (a > 0 && b < 0) {
+			remainder = a - (int) (Math.ceil(a / b)) * b;
+		}
+
+		return rem(b, remainder);
+
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int a, b;
@@ -37,7 +54,7 @@ public class Euclid {
 
 			System.out.println("НОД числе с помощью %: " + method1(a, b));
 			System.out.println("НОД числе с помощью floorMod: " + method2(a, b));
-			// System.out.println("НОД числе с помощью rem: " + rem(a, b));
+			System.out.println("НОД числе с помощью rem: " + rem(a, b));
 
 		} catch (IOException | NumberFormatException e) {
 			System.out.println("ошибка ввода" + e);
