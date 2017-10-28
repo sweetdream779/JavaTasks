@@ -1,75 +1,104 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Spliterator;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class scanner {
-	public static Stream<String> scannerToWords(Scanner scanner) {
+	public static Stream<String> scannerToWords(Scanner scanner) 
+	{
 		System.out.println("Enter something, 'q' to quit");
-		List<String> myList = new ArrayList<String>();
-		String word;
-		while (scanner.hasNext()) {
-			word = scanner.next();
-			if ("q".equalsIgnoreCase(word))
-				break;
-			myList.add(word);
-		}
-		return myList.stream();
+		Iterator<String> It = new Iterator<String>() {
+			String word;
+			public boolean hasNext(){
+				if ("q".equalsIgnoreCase(word))
+					return false;
+				else
+					return scanner.hasNext();
+			}
+			
+			public String next(){
+				word = scanner.next();
+				return word;
+			}
+		};
+		
+		Iterable<String> iterable = ()-> It;
+		Spliterator<String> spliterator = iterable.spliterator();
+		return StreamSupport.stream(spliterator,false);
 	}
+	
 
 	public static Stream<String> scannerToLines(Scanner scanner) {
-		// final Spliterator<String> splt = Spliterators.spliterator(scanner,
-		// Long.MAX_VALUE, Spliterator.ORDERED | Spliterator.NONNULL);
-		// return StreamSupport.stream(splt, false).onClose(scanner::close);
-		System.out.println("Enter something, and 'quit' to exit");
-		List<String> myList = new ArrayList<String>();
-		String line;
-		while (scanner.hasNextLine()) {
-			line = scanner.nextLine();
-			if ("quit".equalsIgnoreCase(line))
-				break;
-			myList.add(line);
-		}
-		return myList.stream();
+		System.out.println("Enter something, and 'quit' to exit");		
+		Iterator<String> It = new Iterator<String>() {
+			String line;
+			public boolean hasNext(){
+				if ("quit".equalsIgnoreCase(line))
+					return false;
+				else
+					return scanner.hasNextLine();
+			}
+			
+			public String next(){
+				line = scanner.nextLine();
+				return line;
+			}
+		};
+		
+		Iterable<String> iterable = ()-> It;
+		Spliterator<String> spliterator = iterable.spliterator();
+		return StreamSupport.stream(spliterator,false);
 	}
 
 	public static Stream<Integer> scannerToIntegers(Scanner scanner) {
 		System.out.println("Enter some integers, and something not integer to quit");
-		List<Integer> myList = new ArrayList<Integer>();
-		int number;
-		while (scanner.hasNextInt()) {
-			number = scanner.nextInt();
-			myList.add(number);
-		}
-		return myList.stream();
+		
+		Iterator<Integer> It = new Iterator<Integer>() {
+			int number;
+			public boolean hasNext(){
+				return scanner.hasNextInt();
+			}
+			
+			public Integer next(){
+				number = scanner.nextInt();
+				return number;
+			}
+		};
+		
+		Iterable<Integer> iterable = ()-> It;
+		Spliterator<Integer> spliterator = iterable.spliterator();
+		return StreamSupport.stream(spliterator,false);
 	}
 
 	public static Stream<Double> scannerToDoubles(Scanner scanner) {
-		System.out.println("Enter some doubles, 'q' to quit");
-		List<Double> myList = new ArrayList<Double>();
-		double number;
-		String next;
-		while (scanner.hasNext()) {
-			try {
-				next = scanner.next();
-				if ("q".equalsIgnoreCase(next))
-					break;
-				number = Double.parseDouble(next);
-				myList.add(number);
-			} catch (NumberFormatException e) {
-				System.out.println("Value not double: " + e);
+		System.out.println("Enter some doubles, and something not doubles to quit");
+		
+		Iterator<Double> It = new Iterator<Double>() {
+			double number;
+			public boolean hasNext(){
+				return scanner.hasNextDouble();
 			}
-		}
-		return myList.stream();
+			
+			public Double next(){
+				number = scanner.nextDouble();
+				return number;
+			}
+		};
+		Iterable<Double> iterable = ()-> It;
+		Spliterator<Double> spliterator = iterable.spliterator();
+		return StreamSupport.stream(spliterator,false);
 	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Scanner scanner = new Scanner(System.in);
-		// Stream<Integer> stream = scannerToIntegers(scanner);
-		// Stream<String> stream = scannerToWords(scanner);
-		// Stream<String> stream = scannerToLines(scanner);
-		Stream<Double> stream = scannerToDoubles(scanner);
+		Stream<Integer> stream = scannerToIntegers(scanner);
+		//Stream<String> stream = scannerToWords(scanner);
+		//Stream<String> stream = scannerToLines(scanner);
+		//Stream<Double> stream = scannerToDoubles(scanner);
 		stream.forEach(s -> System.out.println(s));
 	}
 

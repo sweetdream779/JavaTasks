@@ -1,37 +1,42 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import java.util.Iterator;
+import java.util.Spliterator;
 
-public class Streams {
-
-	public static Supplier<Stream<String>> zip(Supplier<Stream<Integer>> first, Supplier<Stream<Character>> second) {
-		Supplier<Stream<String>> newStream;
-		long n;
-		List<String> myList = new ArrayList<String>();
-
-		if (first.get().count() < second.get().count())
-			n = first.get().count();
-		else
-			n = second.get().count();
-		for (long i = 0; i < n; i++) {
-			myList.add(Integer.toString(first.get().skip(i).findFirst().get()));
-			myList.add(String.valueOf(second.get().skip(i).findFirst().get()));
+public class Streams {	
+	public static Stream<String> zip(Stream<Integer> first, Stream<Character> second){
+	Iterator<Integer> firstIt = first.iterator();
+	Iterator<Character> secondIt = second.iterator();
+	Iterator<String> It = new Iterator<String>() {
+		boolean isFirst = true;
+		public boolean hasNext(){
+			if(isFirst) return firstIt.hasNext();
+			return secondIt.hasNext();
 		}
-		newStream = () -> myList.stream();
-		return newStream;
+		public String next(){
+			if (isFirst){
+				isFirst = false;
+				return String.valueOf(firstIt.next());
+			}
+			isFirst = true;
+			return String.valueOf(secondIt.next());
+		}
+	};
+	Iterable<String> iterable = ()-> It;
+	Spliterator<String> spliterator = iterable.spliterator();
+	return StreamSupport.stream(spliterator, false);
 	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Supplier<Stream<Integer>> integers = () -> IntStream.range(0, 100).boxed();
+		Stream<Integer> integers = IntStream.range(0, 100).boxed();
 
 		String line = "abcdefghijklmnopqrstuvwxyz";
-		Supplier<Stream<Character>> letters = () -> Stream.of(line.chars().mapToObj(c -> (char) c).toArray(Character[]::new));
+		Stream<Character> letters = Stream.of(line.chars().mapToObj(c -> (char) c).toArray(Character[]::new));
 
-		Supplier<Stream<String>> zipStream = zip(integers, letters);
-		zipStream.get().forEach(x -> System.out.println(x));
+		Stream<String> zipStream = zip(integers, letters);
+		zipStream.forEach(x -> System.out.println(x));
 	}
 
 }
