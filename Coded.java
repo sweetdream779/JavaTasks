@@ -20,19 +20,17 @@ public class Coded {
 	static String CodedWord(String initial, Map<Integer, String> FirstPart, Map<Integer, String> SecondPart) {
 		char[] word = initial.toCharArray();
 		char[] coded = new char[word.length];
-		int codeArray1, codeArray2, j = -1;
+		int codeArray1, codeArray2, j = -1, ascii;
 		for (char letter : word) {
 			j += 1;
-			if (letter == ' ') {
-				System.out.println("Word must not contain a space.");
-				System.exit(1);
+			ascii=(int)letter;
+			if (ascii<65||(ascii>90&ascii<97)||ascii>122){				
+				coded[j]=letter;
+				continue;
 			}
 			codeArray1 = getKey(FirstPart, String.valueOf(Character.toLowerCase(letter)));
 			codeArray2 = getKey(SecondPart, String.valueOf(Character.toLowerCase(letter)));
-			if (codeArray1 == -1 && codeArray2 == -1) {
-				System.out.println("One of symbol you printed is not a letter.");
-				System.exit(1);
-			}
+
 			if (codeArray1 == -1)
 				coded[j] = FirstPart.get(codeArray2).toCharArray()[0];
 			if (codeArray2 == -1)
@@ -57,6 +55,7 @@ public class Coded {
 		try {
 			System.out.println("Print a word needed to be coded and press Enter: ");
 			String string = br.readLine();
+			
 			String coded = CodedWord(string, FirstPart, SecondPart);
 			System.out.println("CodedWord: " + coded);
 
@@ -64,7 +63,7 @@ public class Coded {
 			System.out.println("UnodedWord: " + uncoded);
 
 		} catch (IOException e) {
-			System.out.println("ошибка ввода" + e);
+			System.out.println(e);
 		}
 	}
 
